@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman - Car Edition</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #game-container {
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        #word-display {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        input {
+            font-size: 18px;
+            text-align: center;
+            width: 50px;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 10px 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Hangman - Car Edition</h1>
+        <p>Guess the car!</p>
+        <p id="word-display">_ _ _ _ _ _ _</p>
+        <input type="text" id="guess-input" maxlength="1" autofocus>
+        <button id="guess-button">Guess</button>
+        <p>Attempts Left: <span id="attempts-left">6</span></p>
+        <p id="message"></p>
+    </div>
+    <script>
+        const selectedWord = "ferrari";
+        let displayedWord = Array(selectedWord.length).fill("_");
+        let attempts = 6;
+
+        // Function to update the word display
+        function updateWordDisplay() {
+            document.getElementById("word-display").textContent = displayedWord.join(" ");
+        }
+
+        // Function that handles the player's guess
+        function makeGuess() {
+            const guess = document.getElementById("guess-input").value.toLowerCase();
+            document.getElementById("guess-input").value = "";  // Clear the input field after the guess
+
+            if (guess.length === 1 && /^[a-z]$/i.test(guess)) {
+                let correctGuess = false;
+
+                // Loop through the selected word and check if the guessed letter is in the word
+                for (let i = 0; i < selectedWord.length; i++) {
+                    if (selectedWord[i] === guess) {
+                        displayedWord[i] = guess;  // Update the displayed word with the correct guess
+                        correctGuess = true;
+                    }
+                }
+
+                if (!correctGuess) {
+                    attempts--;
+                    document.getElementById("attempts-left").textContent = attempts;
+                }
+
+                updateWordDisplay();
+                checkGameStatus();
+            } else {
+                alert("Please enter a valid single letter.");
+            }
+        }
+
+        // Function to check if the game is over or if the player has won
+        function checkGameStatus() {
+            if (attempts <= 0) {
+                document.getElementById("message").textContent = "Game Over! The car was: " + selectedWord + " 🏁";
+            } else if (!displayedWord.includes("_")) {
+                document.getElementById("message").textContent = "You Win! The car was: " + selectedWord + " 🚗";
+            }
+        }
+
+        // Initialize the game by displaying the word
+        updateWordDisplay();
+
+        // Add event listener to the "Guess" button
+        document.getElementById("guess-button").addEventListener("click", makeGuess);
+    </script>
+</body>
+</html>
